@@ -1,0 +1,9 @@
+-- This file includes all parts of the schema
+-- See individual files for more details:
+-- schema_part1.sql: Extensions, Users, Syllabus nodes, Embeddings
+-- schema_part2.sql: Notes, Podcasts, Videos, Progress
+-- schema_part3.sql: Tests, Questions, Test attempts, Flashcards
+-- schema_part4.sql: Builds, Subscriptions, Triggers
+-- schema_part5.sql: RLS enablement, User/Syllabus/Embeddings/Notes policies
+-- schema_part6.sql: Podcasts/Videos/Progress/Tests/Questions/Test attempts policies
+-- schema_part7.sql: Flashcards/Builds/Subscriptions policies, Storage buckets
