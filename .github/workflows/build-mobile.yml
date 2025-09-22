@@ -31,9 +31,15 @@ jobs:
       - name: Build app
         run: |
           echo "Starting EAS build..."
+          echo "EXPO_API_KEY length: ${#EXPO_API_KEY}"
           cd apps/mobile
           PROFILE=${{ github.event.inputs.profile || 'preview' }}
           echo "Building with profile: $PROFILE"
-          npx eas build --platform android --profile $PROFILE --non-interactive --wait
+          echo "Checking eas availability:"
+          which npx || echo "npx not found"
+          echo "PATH: $PATH"
+          echo "Current directory: $(pwd)"
+          eas build --platform android --profile $PROFILE --non-interactive --wait
         env:
           EXPO_API_KEY: ${{ secrets.EXPO_API_KEY }}
+      - name: Debug eas availability
