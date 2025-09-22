@@ -25,9 +25,10 @@ jobs:
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EXPO_API_KEY }}
           expo-version: latest
-          token: ${{ secrets.EXPO_API_KEY }}
+          package-manager: pnpm
+      - name: Check EXPO_API_KEY
+        run: echo "EXPO_API_KEY is ${#EXPO_API_KEY} characters long"
       - name: Install dependencies
         run: pnpm install
       - name: Install EAS CLI
