@@ -17,26 +17,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 8.15.1
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 18.20.8
           cache: 'pnpm'
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
+          token: ${{ secrets.EXPO_API_KEY }}
+          expo-version: latest
           token: ${{ secrets.EXPO_API_KEY }}
       - name: Install dependencies
         run: pnpm install
       - name: Install EAS CLI
         run: pnpm add -g eas-cli
       - name: Verify EAS CLI installation
-        run: |
-          eas --version
-      - name: Setup EAS
-        run: eas build:configure
+        run: eas --version
       - name: Build app
         run: |
+          echo "Starting EAS build..."
           cd apps/mobile
           PROFILE=${{ github.event.inputs.profile || 'preview' }}
           echo "Building with profile: $PROFILE"
