@@ -28,21 +28,33 @@ jobs:
           token: ${{ secrets.EXPO_API_KEY }}
       - name: Install dependencies
         run: pnpm install
+      - name: Install EAS CLI
+        run: pnpm add -g eas-cli
+      - name: Verify EAS CLI installation
+        run: |
+          eas --version
       - name: Setup EAS
-        run: pnpm exec eas-cli build:configure
+        run: eas build:configure
       - name: Build app
         run: |
           cd apps/mobile
-          PROFILE=${{ github.event.inputs.profile || 'production' }}
-          pnpm exec eas-cli build --platform android --profile $PROFILE --non-interactive
+          PROFILE=${{ github.event.inputs.profile || 'preview' }}
+          echo "Building with profile: $PROFILE"
+          eas build --platform android --profile $PROFILE --non-interactive
+          echo "Build completed"
         env:
           EXPO_API_KEY: ${{ secrets.EXPO_API_KEY }}
       - name: Create build directory
         run: mkdir -p builds/latest
+      - name: Wait for build to complete
+        run: |
+          echo "Waiting for build to complete..."
+          sleep 30
       - name: Download build artifacts
         run: |
-          BUILD_URL=$(pnpm exec eas-cli build:list --limit=1 --status=finished --platform=android --json | jq -r '.[0].artifacts.buildUrl')
-          curl -o builds/latest/app-release.aab $BUILD_URL
+          echo "Downloading build artifacts..."
+          BUILD_URL=$(eas build:list --limit=1 --status=finished --platform=android --json | jq -r '.[0].artifacts.buildUrl')
+          curl -L -o builds/latest/app-release.aab $BUILD_URL
         env:
           EXPO_API_KEY: ${{ secrets.EXPO_API_KEY }}
       - name: Upload to GitHub Release
@@ -64,7 +76,7 @@ jobs:
           node -e "
             const { createClient } = require('@supabase/supabase-js');
             const fs = require('fs');
-            
+
             async function uploadBuild() {
               const supabase = createClient(
                 process.env.SUPABASE_URL,
