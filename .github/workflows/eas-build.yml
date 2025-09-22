@@ -26,12 +26,13 @@ jobs:
         with:
           eas-version: latest
           expo-version: latest
-          package-manager: pnpm
+          packager: pnpm
+          token: ${{ secrets.EXPO_API_KEY }}
       - name: Check EXPO_API_KEY
-        run: echo "EXPO_API_KEY is ${#EXPO_API_KEY} characters long"
+        run: |
+          echo "EXPO_API_KEY is ${#EXPO_API_KEY} characters long"
       - name: Install dependencies
         run: pnpm install
-      - name: Install EAS CLI
         run: pnpm add -g eas-cli
       - name: Verify EAS CLI installation
         run: eas --version
