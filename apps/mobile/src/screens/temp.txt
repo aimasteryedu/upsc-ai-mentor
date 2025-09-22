@@ -1,0 +1,50 @@
+  const \[apiKeys, setApiKeys\] = useState\<\{provider: string, key: string\}\[\]\>\(\[\]\);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Load users
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (usersError) throw usersError;
+      setUsers(usersData || []);
+
+      // Load subscriptions
+      const { data: subsData, error: subsError } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (subsError) throw subsError;
+      setSubscriptions(subsData || []);
+
+      // Load content items (simplified)
+      const { data: notesData } = await supabase
+        .from('notes')
+        .select('id, title, created_at, user_id, is_ai_generated')
+        .eq('is_ai_generated', true)
+        .limit(50);
+
+      const { data: podcastsData } = await supabase
+        .from('podcasts')
+        .select('id, title, created_at')
+        .limit(50);
+
+      const { data: videosData } = await supabase
+        .from('videos')
+        .select('id, title, created_at')
+        .limit(50);
+
+      // Combine content items
+      const content = [
+        ...(notesData || []).map(item => ({ ...item, type: 'note' as const, status: 'approved' as const })),
+        ...(podcastsData || []).map(item => ({ ...item, type: 'podcast' as const, status: 'approved' as const })),
+        ...(videosData || []).map(item => ({ ...item, type: 'video' as const, status: 'approved' as const }))

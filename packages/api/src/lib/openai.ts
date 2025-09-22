@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import \{ createClient \} from "@supabase/supabase-js";
 
 // Singleton OpenAI client for server-side use (Edge Functions)
 let _openaiClient: OpenAI | null = null;

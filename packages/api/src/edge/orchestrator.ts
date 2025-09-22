@@ -1,7 +1,13 @@
 import axios from "axios";
+import \{ createClient \} from "@supabase/supabase-js";
 import { searchDocuments } from "../services/rag";
 
-interface OrchestrationRequest {
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_ANON_KEY')!
+);
+
+interface OrchestrationRequest \{
   type: "lesson" | "test" | "script" | "notes";
   query: string;
   syllabusNodeId?: string;
