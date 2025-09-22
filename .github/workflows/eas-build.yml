@@ -33,10 +33,12 @@ jobs:
           echo "EXPO_API_KEY is ${#EXPO_API_KEY} characters long"
       - name: Install dependencies
         run: pnpm install
+      - name: Install EAS CLI
         run: pnpm add -g eas-cli
       - name: Verify EAS CLI installation
         run: eas --version
-      - name: Build app
+      - name: Verify EAS CLI installation
+        run: eas --version
         run: |
           echo "Starting EAS build..."
           cd apps/mobile
