@@ -1,0 +1,39 @@
+name: Build Mobile App
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile (preview, production)'
+        required: false
+        default: 'preview'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8.15.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.20.8
+          cache: 'pnpm'
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          expo-version: latest
+          packager: pnpm
+          token: ${{ secrets.EXPO_API_KEY }}
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build app
+        run: |
+          echo "Starting EAS build..."
+          cd apps/mobile
+          PROFILE=${{ github.event.inputs.profile || 'preview' }}
+          echo "Building with profile: $PROFILE"
+          npx eas build --platform android --profile $PROFILE --non-interactive --wait
+        env:
+          EXPO_API_KEY: ${{ secrets.EXPO_API_KEY }}
